@@ -13,7 +13,7 @@ all: $(EXECUTABLES)
 
 $(EXE_RING): $(OBJECTS_RING)
 	$(CC) -o $@ $^ $(INC_PATH) $(LIB_PATH) -l$(LIBRARY) $(STDLIBS)
-	$(STRIP) $(addsuffix .exe, $(EXE_RING))
+	$(STRIP) $(EXE_RING)
 
 .c.o:
 	$(CC) $(INC_PATH) $(CFLAGS) $< -o $@
@@ -21,4 +21,4 @@ $(EXE_RING): $(OBJECTS_RING)
 clean:
 	$(info removing tests...)
 	$(RM) *.o
-	$(RM) $(addsuffix .exe, $(EXECUTABLES))
+	$(RM) $(EXECUTABLES)
