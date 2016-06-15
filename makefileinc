@@ -1,6 +1,6 @@
 CC=gcc
-CFLAGS=-c -std=c11 -Wall -Wno-format -O2 -DNDEBUG -pedantic
-STDLIBS =
+CFLAGS=-c -std=gnu11 -Wall -Wno-format -Og -g3 -pedantic
+STDLIBS =-lpthread
 GCCLIBS =
 LDFLAGS= -s $(STDLIBS) $(GCCLIBS) 
 		
@@ -13,9 +13,7 @@ AR=ar
 ARARGS=rcs
 RUNLIB=ranlib
 RUNLIBARGS=
-RM=del
 STRIP=strip --strip-unneeded
-MAKE?=mingw32-make.exe
 
 INC_PATH=-I../include
 LIB_PATH=-L. -L../lib -lpthread
