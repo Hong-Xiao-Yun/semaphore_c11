@@ -16,4 +16,4 @@ RUNLIBARGS=
 STRIP=strip --strip-unneeded
 
 INC_PATH=-I../include
-LIB_PATH=-L. -L../lib -lpthread
+LIB_PATH=-L. -L../lib 
