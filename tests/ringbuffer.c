@@ -1,7 +1,9 @@
 ﻿#include "threads.h"
 #include "ringbuffer.h"
+#include <stdio.h>
 
-int ring_buffer_init(ring_buffer_t* rbuf, unsigned int count) {
+int ring_buffer_init(ring_buffer_t* rbuf, unsigned int count)
+{
     if (rbuf == NULL) {
         return 2;
     }
@@ -18,7 +20,8 @@ int ring_buffer_init(ring_buffer_t* rbuf, unsigned int count) {
     return 0;
 }
 
-void ring_buffer_destroy(ring_buffer_t* rbuf) {
+void ring_buffer_destroy(ring_buffer_t* rbuf)
+{
     if (rbuf == NULL) {
         return;
     }
@@ -30,24 +33,31 @@ void ring_buffer_destroy(ring_buffer_t* rbuf) {
     }
 }
 
-void ring_push(ring_buffer_t* rbuf, void* value) {
+void ring_push(ring_buffer_t* rbuf, void* value)
+{
     if (rbuf == NULL || rbuf->count == 0) {
         return;
     }
 
+    // printf("in push");
     sem_wait(&rbuf->sem_space);
     mtx_lock(&rbuf->mtx);
     rbuf->buffer[rbuf->counter] = value;
     rbuf->counter = (rbuf->counter+1) % 16;
     mtx_unlock(&rbuf->mtx);
     sem_post(&rbuf->sem_count);
+
+    // printf("out push\n");
 }
 
-void* ring_pop(ring_buffer_t* rbuf) {
+void* ring_pop(ring_buffer_t* rbuf)
+{
+
     if (rbuf == NULL || rbuf->count == 0) {
+        // printf("in pop null\n");
         return 0;
     }
-
+    // printf("in pop");
     sem_wait(&rbuf->sem_count);
 
     mtx_lock(&rbuf->mtx);
@@ -55,6 +65,7 @@ void* ring_pop(ring_buffer_t* rbuf) {
     void* value = rbuf->buffer[rbuf->counter];
     mtx_unlock(&rbuf->mtx);
     sem_post(&rbuf->sem_space);
+    // printf("out pop");
 
     return value;
 }

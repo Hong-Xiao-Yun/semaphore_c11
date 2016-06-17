@@ -1,4 +1,5 @@
 ﻿#include <pthread.h>
+#include <stdio.h>
 #include "semaphore.h"
 
 int sem_init(sem_t* sem, int count) {
@@ -35,6 +36,7 @@ void sem_post(sem_t* sem) {
 
     mtx_lock(&sem->mtx);
 
+
     ++sem->count;
     cnd_signal(&sem->cv);
 
@@ -47,6 +49,8 @@ void sem_wait(sem_t* sem) {
     }
 
     mtx_lock(&sem->mtx);
+
+
 
     while (sem->count == 0) {
         cnd_wait(&sem->cv, &sem->mtx);

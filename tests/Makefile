@@ -9,7 +9,10 @@ EXECUTABLES=$(EXE_RING)
 
 .PHONY: all clean $(EXECUTABLES)
 
-all: $(EXECUTABLES)
+all: ../libsemaphore.a $(EXECUTABLES)
+
+../libsemaphore.a:
+	$(MAKE) -C ../lib
 
 $(EXE_RING): $(OBJECTS_RING)
 	$(CC) -o $@ $^ $(INC_PATH) $(LIB_PATH) -l$(LIBRARY) $(STDLIBS)
