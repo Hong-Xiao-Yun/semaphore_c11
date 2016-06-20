@@ -34,13 +34,13 @@ void sem_post(sem_t* sem) {
         return;
     }
 
-    mtx_lock(&sem->mtx);
+    // mtx_lock(&sem->mtx);
 
 
     ++sem->count;
     cnd_signal(&sem->cv);
 
-    mtx_unlock(&sem->mtx);
+    // mtx_unlock(&sem->mtx);
 }
 
 void sem_wait(sem_t* sem) {
@@ -48,7 +48,7 @@ void sem_wait(sem_t* sem) {
         return;
     }
 
-    mtx_lock(&sem->mtx);
+    // mtx_lock(&sem->mtx);
 
 
 
@@ -58,6 +58,6 @@ void sem_wait(sem_t* sem) {
 
     --sem->count;
 
-    mtx_unlock(&sem->mtx);
+    // mtx_unlock(&sem->mtx);
 }
 

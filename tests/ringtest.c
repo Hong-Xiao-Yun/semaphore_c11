@@ -55,7 +55,7 @@ int main (int argc, char** argv)
 
     }
     ring_buffer_destroy(&rb);
-    printf("average acquire time=%1.3f ms\n",sumrelease/nhijos);
+    printf("average  time=%1.3f ms\n",sumrelease/nhijos);
     return 0;
 }
 void *active(void *aegp)
@@ -63,7 +63,7 @@ void *active(void *aegp)
     struct timespec start, end;
     clock_gettime(CLOCK_REALTIME, &start);
     int v=(rand()%100)+1;
-    // printf("rand number is %d\n",v);
+    printf("rand number is %d\n",v);
     ring_push(&rb, (void*)(uintptr_t)v);
     int x = (int)(uintptr_t)ring_pop(&rb);
     clock_gettime(CLOCK_REALTIME, &end);
