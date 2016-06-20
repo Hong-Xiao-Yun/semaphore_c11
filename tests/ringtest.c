@@ -7,7 +7,20 @@
 #include "thread.h"
 void *active(void *aegp);
 ring_buffer_t rb;
-static int REASONABLE_THREAD_MAX=500;
+
+static double diff_in_second(struct timespec t1, struct timespec t2)
+{
+    struct timespec diff;
+    if (t2.tv_nsec-t1.tv_nsec < 0) {
+        diff.tv_sec  = t2.tv_sec - t1.tv_sec - 1;
+        diff.tv_nsec = t2.tv_nsec - t1.tv_nsec + 1000000000;
+    } else {
+        diff.tv_sec  = t2.tv_sec - t1.tv_sec;
+        diff.tv_nsec = t2.tv_nsec - t1.tv_nsec;
+    }
+    return (diff.tv_sec + diff.tv_nsec / 1000000000.0);
+}
+double sumrelease=0.0;
 int main (int argc, char** argv)
 {
     int nhijos;
@@ -18,10 +31,7 @@ int main (int argc, char** argv)
 
     if (argc > 1) {
         nhijos = atoi(argv[1]);
-        if ((nhijos <= 0) || (nhijos > REASONABLE_THREAD_MAX)) {
-            printf("invalid argument for thread count\n");
-            exit(EXIT_FAILURE);
-        }
+      
         threadS=(threads**)malloc(sizeof(threads*)*nhijos);
         tid=(pthread_t*)malloc(sizeof(pthread_t)*nhijos);
 
@@ -45,15 +55,19 @@ int main (int argc, char** argv)
 
     }
     ring_buffer_destroy(&rb);
-
+    printf("average acquire time=%1.3f ms\n",sumrelease/nhijos);
     return 0;
 }
 void *active(void *aegp)
 {
+    struct timespec start, end;
+    clock_gettime(CLOCK_REALTIME, &start);
     int v=(rand()%100)+1;
-    printf("rand number is %d\n",v);
+    // printf("rand number is %d\n",v);
     ring_push(&rb, (void*)(uintptr_t)v);
     int x = (int)(uintptr_t)ring_pop(&rb);
+    clock_gettime(CLOCK_REALTIME, &end);
+    sumrelease+=diff_in_second(start, end);
     printf("Got value: %d\n", x);
     pthread_exit(0);
 }
